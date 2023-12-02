@@ -3,74 +3,45 @@ const std = @import("std");
 var memal = std.heap.GeneralPurposeAllocator(.{}){};
 const allocator = memal.allocator();
 
-fn sum_first_last(file: std.fs.File) i32 {
-    const stat = file.stat() catch {
-        return 0;
-    };
-    var file_data = file.reader().readAllAlloc(allocator, stat.size) catch {
-        return 0;
-    };
+const digit_names = std.ComptimeStringMap(u8, .{
+    .{ "one", '1' },   .{ "two", '2' },   .{ "three", '3' },
+    .{ "four", '4' },  .{ "five", '5' },  .{ "six", '6' },
+    .{ "seven", '7' }, .{ "eight", '8' }, .{ "nine", '9' },
+});
 
-    var lines = std.mem.tokenize(u8, file_data, "\n");
-    var rolling_sum: i32 = 0;
-    while (lines.next()) |line| {
-        var first_digit: i32 = for (line) |ch| {
-            if (ch >= '0' and ch <= '9') {
-                break ch - '0';
-            }
-        };
-        var running_last: i32 = first_digit;
-        for (line) |ch| {
-            if (ch >= '0' and ch <= '9') {
-                running_last = ch - '0';
-            }
-        }
-        rolling_sum += 10 * first_digit + running_last;
-    }
-    return rolling_sum;
+const substr_list: [18][]const u8 = .{ "1", "2", "3", "4", "5", "6", "7", "8", "9", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+
+fn digit_name(number: []const u8) u8 {
+    return digit_names.get(number).?;
 }
 
-fn to_numbers_only(string: []const u8) ![]u8 {
-    var new_str = try allocator.dupe(u8, string);
-    _ = std.mem.replace(u8, new_str, "one", "o1e", new_str);
-    _ = std.mem.replace(u8, new_str, "two", "t2o", new_str);
-    _ = std.mem.replace(u8, new_str, "three", "th3ee", new_str);
-    _ = std.mem.replace(u8, new_str, "four", "fo4r", new_str);
-    _ = std.mem.replace(u8, new_str, "five", "fi5w", new_str);
-    _ = std.mem.replace(u8, new_str, "six", "s6x", new_str);
-    _ = std.mem.replace(u8, new_str, "seven", "se7en", new_str);
-    _ = std.mem.replace(u8, new_str, "eight", "ei8ht", new_str);
-    _ = std.mem.replace(u8, new_str, "nine", "ni9e", new_str);
-
-    return new_str;
+fn digits_as_number(num: struct { i32, i32 }) i32 {
+    return 10 * num[0] + num[1];
 }
 
-fn sum_first_last_fancy(file: std.fs.File) !i32 {
-    const stat = file.stat() catch {
-        return 0;
-    };
-    var file_data = file.reader().readAllAlloc(allocator, stat.size) catch {
-        return 0;
-    };
+fn first_last_digit(source_str: []const u8, accept_text: bool) !struct { i32, i32 } {
+    var first_inst: usize = std.math.maxInt(usize);
+    var first_val: i32 = undefined;
+    var last_inst: usize = std.math.minInt(usize);
+    var last_val: i32 = undefined;
 
-    var lines = std.mem.tokenize(u8, file_data, "\n");
-    var rolling_sum: i32 = 0;
-    while (lines.next()) |line_p| {
-        var line = try to_numbers_only(line_p);
-        var first_digit: i32 = for (line) |ch| {
-            if (ch >= '0' and ch <= '9') {
-                break ch - '0';
-            }
-        };
-        var running_last: i32 = first_digit;
-        for (line) |ch| {
-            if (ch >= '0' and ch <= '9') {
-                running_last = ch - '0';
-            }
+    for (substr_list) |substr| {
+        if (accept_text == false and substr.len > 1) continue;
+
+        var ind: usize = std.mem.indexOf(u8, source_str, substr) orelse continue;
+        if (ind < first_inst) {
+            first_inst = ind;
+            const digit = if (substr.len > 1) digit_name(substr) else substr[0];
+            first_val = try std.fmt.charToDigit(digit, 10);
         }
-        rolling_sum += 10 * first_digit + running_last;
+        ind = std.mem.lastIndexOf(u8, source_str, substr) orelse continue;
+        if (ind >= last_inst) {
+            last_inst = ind;
+            const digit = if (substr.len > 1) digit_name(substr) else substr[0];
+            last_val = try std.fmt.charToDigit(digit, 10);
+        }
     }
-    return rolling_sum;
+    return .{ first_val, last_val };
 }
 
 pub fn main() !void {
@@ -80,13 +51,16 @@ pub fn main() !void {
 
     const file_path = "input.txt";
     var file = try std.fs.cwd().openFile(file_path, .{ .mode = .read_only });
+    const stat = try file.stat();
+    const file_data = try file.reader().readAllAlloc(allocator, stat.size);
 
-    const part_1 = sum_first_last(file);
-    try stdout.print("Part 1: {}\n", .{part_1});
-    file.close();
+    var lines = std.mem.tokenize(u8, file_data, "\n");
+    var rolling_sum1: i32 = 0;
+    var rolling_sum2: i32 = 0;
+    while (lines.next()) |line| {
+        rolling_sum1 += digits_as_number(try first_last_digit(line, false));
+        rolling_sum2 += digits_as_number(try first_last_digit(line, true));
+    }
 
-    var file2 = try std.fs.cwd().openFile(file_path, .{ .mode = .read_only });
-    defer file2.close();
-    const part_2 = try sum_first_last_fancy(file2);
-    try stdout.print("Part 2: {}\n", .{part_2});
+    try stdout.print("Part 1: {}\nPart 2: {}\n", .{ rolling_sum1, rolling_sum2 });
 }
