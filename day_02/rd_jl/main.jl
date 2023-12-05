@@ -7,7 +7,7 @@ function extract_colors(game)
     draws = split(strip(game), ';')
     color_list = []
     for draw in draws
-        colors = split(draw, ',')
+        colors = split(strip(draw), ',')
         color_list = append!(color_list, colors)
     end
     return color_list
@@ -51,17 +51,46 @@ function game_is_possible(draws, possible_cubes)
 end
 
 # Call the function for each line and print the results
-function get_game_sum_of_possible_runs(lines)
+function get_game_sum_of_possible_runs(lines, possible_cubes)
     sum = 0
     for line in lines
-        possible_cubes = get_possible_cubes_dict(13,14,12)
         game, draws = extract_info(line)
         if game_is_possible(draws, possible_cubes)
-            println(game)
             sum = sum + game
         end
     end
     return sum
 end
 
-println(get_game_sum_of_possible_runs(lines))
+function compute_power(my_dict)
+    product = 1
+    for (key, value) in my_dict
+        product = my_dict[key] * product
+    end
+    return product
+end
+
+function get_minimal_power(line, possible_cubes)
+    game, draws = extract_info(line)
+    max_cubes_used = Dict("red" => 0, "blue" => 0, "green" => 0)
+    for draw in draws
+        color, digit = extract_color_and_digit(draw)
+        if digit > max_cubes_used[color] 
+            max_cubes_used[color] = digit
+        end
+    end
+    return compute_power(max_cubes_used)
+end
+
+function get_sum_of_minimalo_power(lines, possible_cubes)
+    sum = 0
+    for line in lines
+        sum = sum + get_minimal_power(line, possible_cubes)
+    end
+    return sum
+end
+
+possible_cubes = get_possible_cubes_dict(13,14,12)
+
+println(get_game_sum_of_possible_runs(lines, possible_cubes))
+println(get_sum_of_minimalo_power(lines, possible_cubes))
