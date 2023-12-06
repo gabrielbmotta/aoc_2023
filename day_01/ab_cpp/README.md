@@ -42,3 +42,28 @@ In this example, the calibration values of these four lines are `12`, `38`,
 
 Consider your entire calibration document. **What is the sum of all of the
 calibration values?**
+
+## Building
+
+This project can be built using [CMake](https://cmake.org/). Configure the
+project in a build directory:
+
+    cmake <PATH-TO-TREBUCHET>
+
+Then build the project:
+
+    cmake --build .
+
+## Testing
+
+This project uses
+[ctest](https://cmake.org/cmake/help/latest/manual/ctest.1.html) for testing.
+
+    ctest
+
+Be sure to provide a configuration via the `-C` flag if the compile (for
+example, MSVC) requires it.
+
+## License
+
+This project inherits the license at the root of this repository.
