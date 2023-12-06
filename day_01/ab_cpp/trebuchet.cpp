@@ -35,15 +35,27 @@ int main(int argc, char **argv)
 
     // Open input file
     char *input_name = argv[1];
-    std::cout << "I'll get " << input_name << " decoded for you in a hot sec..." << std::endl;
     std::ifstream input(input_name);
+    std::cout << "I'll get " << input_name << " decoded for you in a hot sec..." << std::endl
+              << std::endl;
 
-    // Just echo calibration values for now for now
+    // Parse input line by line
     std::string line;
+    auto sum_calibration_values = 0;
     while (std::getline(input, line))
     {
-        std::cout << GetCalibrationValue(line) << std::endl;
+        // Get calibration value
+        auto calibration_value = GetCalibrationValue(line);
+        std::cout << calibration_value << " from " << line << std::endl;
+
+        // Add it to the sum
+        sum_calibration_values += calibration_value;
     }
+    std::cout << std::endl;
+
+    // Drumroll, please
+    std::cout << "Sum of all of the calibration values: " << sum_calibration_values << std::endl
+              << "Now go get 'em, tiger!" << std::endl;
 }
 
 // Get the calibration value from an improved calibration document line
