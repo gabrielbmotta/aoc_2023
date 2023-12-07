@@ -158,15 +158,9 @@ std::string ConvertSpelledOutDigits(const std::string &line)
         return line;
     }
 
-    // Make the substitutions. Handle the last digit first to keep the positions
-    // accurate
+    // Make the substitutions
     std::string r_str = line;
-    r_str.replace(last_digit[0], digits[last_digit[1]].size(), std::string(1, last_digit[1] + '1'));
-    if (first_digit != last_digit)
-    {
-        r_str.replace(first_digit[0],
-                      digits[first_digit[1]].size(),
-                      std::string(1, first_digit[1] + '1'));
-    }
+    r_str[first_digit[0]] = first_digit[1] + '1';
+    r_str[last_digit[0]] = last_digit[1] + '1';
     return r_str;
 }
