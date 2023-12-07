@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 /*! Gets the calibration value from an improved calibration document line.
  *
@@ -13,7 +14,19 @@
  *
  * \exception std::invalid_argument \p line does not contain any digits.
  */
-int GetCalibrationValue(std::string &line);
+int GetCalibrationValue(const std::string &line);
+
+/*! Converts spelled-out digits in an improved calibration document line.
+ *
+ * This function converts the first and last digits that are spelled out---one
+ * to nine---to arabic numerals---1 to 9.
+ *
+ * \param line amended line containing the calibration value.
+ *
+ * \return The amended line with spelled-out digits converted to arabic
+ * numerals.
+ */
+std::string ConvertSpelledOutDigits(const std::string &line);
 
 int main(int argc, char **argv)
 {
@@ -59,11 +72,14 @@ int main(int argc, char **argv)
 }
 
 // Get the calibration value from an improved calibration document line
-int GetCalibrationValue(std::string &line)
+int GetCalibrationValue(const std::string &line)
 {
+    auto converted_line = ConvertSpelledOutDigits(line);
+    // std::cout << ConvertSpelledOutDigits(line) << std::endl;
+
     // Get the first digit
     auto first_digit = -1;
-    for (auto it = line.begin(); it != line.end(); it++)
+    for (auto it = converted_line.begin(); it != converted_line.end(); it++)
     {
         if (isdigit(*it))
         {
@@ -81,7 +97,7 @@ int GetCalibrationValue(std::string &line)
     }
 
     // Get the second digit
-    for (auto rit = line.rbegin(); rit != line.rend(); rit++)
+    for (auto rit = converted_line.rbegin(); rit != converted_line.rend(); rit++)
     {
         if (isdigit(*rit))
         {
@@ -92,4 +108,65 @@ int GetCalibrationValue(std::string &line)
 
     // Shouldn't be possible to reach here, but for completeness
     throw std::runtime_error("reached impossible end");
+}
+
+// Convert spelled-out digits to arabic numerals
+std::string ConvertSpelledOutDigits(const std::string &line)
+{
+    // Possible spelled-out digits
+    const std::vector<std::string> digits = {
+        "one",
+        "two",
+        "three",
+        "four",
+        "five",
+        "six",
+        "seven",
+        "eight",
+        "nine"};
+
+    // First index is position of the match. Second index is the index of the
+    // digit that matched
+    std::vector<int> first_digit = {(int)line.size(), -1};
+    std::vector<int> last_digit = {-1, -1};
+
+    // Look for each index
+    for (auto i = 0; i < digits.size(); i++)
+    {
+        // Start from the left
+        auto pos = (int)line.find(digits[i]);
+        if (pos == std::string::npos)
+        {
+            continue;
+        }
+        if (pos < first_digit[0])
+        {
+            first_digit = {(int)pos, i};
+        }
+
+        // Then from the right
+        pos = (int)line.rfind(digits[i]);
+        if (pos > last_digit[0])
+        {
+            last_digit = {(int)pos, i};
+        }
+    }
+
+    // Negative index means no matches were found
+    if (first_digit[1] < 0 || last_digit[1] < 0)
+    {
+        return line;
+    }
+
+    // Make the substitutions. Handle the last digit first to keep the positions
+    // accurate
+    std::string r_str = line;
+    r_str.replace(last_digit[0], digits[last_digit[1]].size(), std::string(1, last_digit[1] + '1'));
+    if (first_digit != last_digit)
+    {
+        r_str.replace(first_digit[0],
+                      digits[first_digit[1]].size(),
+                      std::string(1, first_digit[1] + '1'));
+    }
+    return r_str;
 }
