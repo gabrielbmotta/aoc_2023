@@ -1,10 +1,9 @@
-#include <iostream>
-#include <fstream>
-#include <map>
 #include <array>
-#include <string>
-#include <stdexcept>
 #include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <stdexcept>
+#include <string>
 
 class EngineSchematic
 {
@@ -18,7 +17,6 @@ class EngineSchematic
     std::ifstream schematic;
 
     std::array<std::string, 3> lines;
-    std::array<std::map<size_t, int *>, 2> part_numbers;
 
     int FindPartNumbers();
 
@@ -78,6 +76,14 @@ int EngineSchematic::FindPartNumbers()
         }
     }
 
+    if (front_pos != std::string::npos)
+    {
+        if (AreSymbolsAdjacent(front_pos, back_pos))
+        {
+            sum += std::stoi(lines[CURR].substr(front_pos, back_pos - front_pos));
+        }
+    }
+
     return sum;
 }
 
@@ -93,7 +99,7 @@ bool EngineSchematic::AreSymbolsAdjacent(size_t front_pos, size_t back_pos)
         }
 
         auto front_line = line->begin() + (front_pos == 0 ? 0 : front_pos - 1);
-        auto back_line = line->begin() + (back_pos > line->size() ? line->size() : back_pos + 1);
+        auto back_line = line->begin() + (back_pos + 1 >= line->size() ? line->size() - 1 : back_pos + 1);
 
         for (auto it = front_line; it != back_line; it++)
         {
