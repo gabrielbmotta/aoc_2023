@@ -3,12 +3,6 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <vector>
-#include <fstream>
-#include <stdexcept>
-#include <array>
-#include <map>
-#include <tuple>
 
 int main(int argc, char **argv)
 {
@@ -23,7 +17,6 @@ int main(int argc, char **argv)
 
     SeedMapper seed_mapper(argv[1]);
     seed_mapper.BuildMaps();
-    seed_mapper.GetLocations();
 
     std::cout << "Lowest location: " << seed_mapper.GetLowestLocation() << std::endl;
 }

@@ -14,7 +14,6 @@ class SeedMapper
 {
     std::ifstream almanac;
     std::vector<unsigned> seeds;
-    std::map<unsigned, unsigned> locations;
     std::map<std::string, std::tuple<std::string, SeedMap>> maps;
 
     void ReadMaps();
@@ -25,8 +24,6 @@ public:
     SeedMapper(const char *);
 
     void BuildMaps();
-
-    void GetLocations();
 
     unsigned GetLowestLocation();
 };

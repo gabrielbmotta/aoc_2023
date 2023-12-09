@@ -37,18 +37,23 @@ void SeedMapper::BuildMaps()
     almanac.close();
 }
 
-void SeedMapper::GetLocations()
-{
-    for (auto it = seeds.begin(); it != seeds.end(); it++)
-    {
-        auto location = LocateSeed(*it);
-        locations[location] = *it;
-    }
-}
-
 unsigned SeedMapper::GetLowestLocation()
 {
-    return locations.begin()->first;
+    unsigned location = -1;
+    for (auto it = seeds.begin(); it != seeds.end(); it += 2)
+    {
+        auto last_seed = *it + *(it + 1);
+        for (auto seed = *it; seed < last_seed; seed++)
+        {
+            auto new_location = LocateSeed(seed);
+            if (location > new_location)
+            {
+                location = new_location;
+            }
+        }
+    }
+
+    return location;
 }
 
 void SeedMapper::ReadMaps()

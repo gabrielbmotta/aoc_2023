@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(SeedMapper VERSION 1.0)
+project(SeedMapper VERSION 2.0)
 
 configure_file(main.h.in main.h)
 
@@ -25,5 +25,5 @@ enable_testing()
 
 add_test(NAME Example COMMAND SeedMapperExe ${PROJECT_SOURCE_DIR}/input_example)
 set_tests_properties(Example
-    PROPERTIES PASS_REGULAR_EXPRESSION "Lowest location: 35"
+    PROPERTIES PASS_REGULAR_EXPRESSION "Lowest location: 46"
 )
