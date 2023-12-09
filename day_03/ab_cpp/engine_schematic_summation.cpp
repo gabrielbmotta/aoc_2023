@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 class EngineSchematic
 {
@@ -22,10 +23,20 @@ class EngineSchematic
 
     bool AreSymbolsAdjacent(size_t, size_t);
 
+    int FindGearRatios();
+
 public:
     EngineSchematic(const char *);
 
     int AddPartNumbers();
+
+    int AddGearRatios();
+
+    std::vector<int> GetGearRatio(size_t, Line);
+
+    size_t GetFrontPos(size_t, Line);
+
+    size_t GetBackPos(size_t, Line);
 };
 
 EngineSchematic::EngineSchematic(const char *input) : schematic{input}
@@ -45,6 +56,21 @@ int EngineSchematic::AddPartNumbers()
     }
 
     sum += FindPartNumbers();
+    return sum;
+}
+
+int EngineSchematic::AddGearRatios()
+{
+    auto sum = 0;
+
+    while (std::getline(schematic, lines[NEXT]))
+    {
+        sum += FindGearRatios();
+        lines[PREV] = lines[CURR];
+        lines[CURR] = lines[NEXT];
+    }
+
+    sum += FindGearRatios();
     return sum;
 }
 
@@ -113,6 +139,96 @@ bool EngineSchematic::AreSymbolsAdjacent(size_t front_pos, size_t back_pos)
     return false;
 }
 
+int EngineSchematic::FindGearRatios()
+{
+    auto sum = 0;
+    size_t pos = lines[CURR].find("*");
+    while (pos != std::string::npos)
+    {
+        auto numbers = GetGearRatio(pos, PREV);
+        auto next_numbers = GetGearRatio(pos, NEXT);
+        numbers.insert(numbers.end(), next_numbers.begin(), next_numbers.end());
+
+        if (numbers.size() == 2)
+        {
+            sum += numbers[0] * numbers[1];
+        }
+
+        pos = lines[CURR].find("*", pos + 1);
+    }
+
+    return sum;
+}
+
+std::vector<int> EngineSchematic::GetGearRatio(size_t pos, Line line)
+{
+    std::vector<int> numbers;
+
+    if (isdigit(lines[line][pos]))
+    {
+        auto front_pos = GetFrontPos(pos, line);
+        auto back_pos = GetBackPos(pos, line);
+
+        numbers.push_back(std::stoi(lines[line].substr(front_pos, back_pos - front_pos)));
+        return numbers;
+    }
+
+    if (pos > 0)
+    {
+        if (isdigit(lines[line][pos - 1]))
+        {
+            auto back_pos = pos;
+            auto front_pos = GetFrontPos(pos - 1, line);
+
+            numbers.push_back(std::stoi(lines[line].substr(front_pos, back_pos - front_pos)));
+        }
+    }
+
+    if (pos < lines[line].size() - 1)
+    {
+        if (isdigit(lines[line][pos + 1]))
+        {
+            auto front_pos = pos + 1;
+            auto back_pos = GetBackPos(pos + 1, line);
+
+            numbers.push_back(std::stoi(lines[line].substr(front_pos, back_pos - front_pos)));
+        }
+    }
+
+    return numbers;
+}
+
+size_t EngineSchematic::GetFrontPos(size_t pos, Line line)
+{
+    auto front_pos = pos + 1;
+
+    while (isdigit(lines[line][front_pos - 1]))
+    {
+        front_pos--;
+        if (front_pos == 0)
+        {
+            break;
+        }
+    }
+
+    return front_pos;
+}
+
+size_t EngineSchematic::GetBackPos(size_t pos, Line line)
+{
+    auto back_pos = pos;
+    while (isdigit(lines[line][back_pos]))
+    {
+        back_pos++;
+        if (back_pos == lines[line].size())
+        {
+            break;
+        }
+    }
+
+    return back_pos;
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2)
@@ -122,5 +238,5 @@ int main(int argc, char **argv)
     }
 
     EngineSchematic engine_schematic(argv[1]);
-    std::cout << "Sum of part numbers: " << engine_schematic.AddPartNumbers() << std::endl;
+    std::cout << "Sum of gear ratios: " << engine_schematic.AddGearRatios() << std::endl;
 }

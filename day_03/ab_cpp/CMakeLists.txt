@@ -10,5 +10,5 @@ add_test(NAME Example COMMAND EngineSchematicSummation input_example
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 set_tests_properties(Example
-    PROPERTIES PASS_REGULAR_EXPRESSION "Sum of part numbers: 4361"
+    PROPERTIES PASS_REGULAR_EXPRESSION "Sum of gear ratios: 467835"
 )
