@@ -131,13 +131,9 @@ unsigned SeedMapper::LocateSeed(unsigned seed)
     unsigned location = seed;
     while (source != "location")
     {
-        std::cout << " " << source << " " << location;
-
         location = std::get<SeedMap>(maps[source]).MapSource(location);
         source = std::get<std::string>(maps[source]);
     }
-
-    std::cout << " " << source << " " << location << std::endl;
 
     return location;
 }
