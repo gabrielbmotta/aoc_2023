@@ -8,5 +8,6 @@ enable_testing()
 
 add_test(NAME Example COMMAND Scratchers ${PROJECT_SOURCE_DIR}/input_example)
 set_tests_properties(Example
-    PROPERTIES PASS_REGULAR_EXPRESSION "Total points: 13"
+    # PROPERTIES PASS_REGULAR_EXPRESSION "Total points: 13"
+    PROPERTIES PASS_REGULAR_EXPRESSION "Total cards: 30"
 )
