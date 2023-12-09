@@ -20,6 +20,15 @@ Then build it.
 Note that multi-configuration tools (such as MSVC) require a configuration (ie.
 `Debug` or `Release`) to be specified.
 
+## Testing
+
+From the build directory, run
+[`ctest`](https://cmake.org/cmake/help/latest/manual/ctest.1.html).
+
+    ctest [-C <cfg>]
+
+Keep in mind that you need to specify the configuration for some tools.
+
 ## License
 
 This project inherits the license of this repository.
