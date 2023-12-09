@@ -1,10 +1,15 @@
-# Day 6
+# BoatingSchool
+
+This project solves the [Day 6](https://adventofcode.com/2023/day/6) puzzle on
+[Advent of Code](https://adventofcode.com/) by determining the margin of error
+present in winning a toy boat race.
 
 ## Puzzle
 
-This project solves the [Day 6](https://adventofcode.com/2023/day/6) puzzle on
-[Advent of Code](https://adventofcode.com/) using this [puzzle
-input](https://adventofcode.com/2023/day/6/input).
+The [puzzle](https://adventofcode.com/2023/day/6) and [puzzle
+input](https://adventofcode.com/2023/day/6/input) are available on [Advent of
+Code](https://adventofcode.com/), though they are also provided in this
+repository.
 
 ### Day 6: Wait For It
 
@@ -96,6 +101,11 @@ together, you get **`288`** (`4` \* `8` \* `9`).
 
 Determine the number of ways you could beat the record in each race. **What do
 you get if you multiply these numbers together?**
+
+## Building
+
+This project uses [CMake](https://cmake.org/) and can be built by invoking
+[cmake(1)](https://cmake.org/cmake/help/latest/manual/cmake.1.html).
 
 ## License
 
