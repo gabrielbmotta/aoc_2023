@@ -127,10 +127,22 @@ anywhere from `14` to `71516` milliseconds and beat the record, a total of
 
 **How many ways can you beat the record in this one much longer race?**
 
+## Usage
+
+This program expects exactly one argument: the path of the file containing the
+record(s).
+
+    BoatingSchool <record>
+
 ## Building
 
 This project uses [CMake](https://cmake.org/) and can be built by invoking
 [cmake(1)](https://cmake.org/cmake/help/latest/manual/cmake.1.html).
+
+## Testing
+
+This project has unit tests that can be run by invoking
+[ctest(1)](https://cmake.org/cmake/help/latest/manual/ctest.1.html).
 
 ## License
 
