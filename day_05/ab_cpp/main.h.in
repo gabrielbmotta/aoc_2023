@@ -1,0 +1,7 @@
+#ifndef SEED_MAPPER_H
+#define SEED_MAPPER_H
+
+#define SeedMapper_VERSION_MAJOR @SeedMapper_VERSION_MAJOR@
+#define SeedMapper_VERSION_MINOR @SeedMapper_VERSION_MINOR@
+
+#endif // SEED_MAPPER_H
