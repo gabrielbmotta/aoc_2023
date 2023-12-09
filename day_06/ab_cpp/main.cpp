@@ -8,9 +8,11 @@
 #include <string>
 #include <vector>
 
-std::array<int, 2> GetRecord(const char *);
+typedef long long base_t;
 
-int GetMarginOfError(int, int);
+std::array<base_t, 2> GetRecord(const char *);
+
+int GetMarginOfError(base_t, base_t);
 
 int main(int argc, char **argv)
 {
@@ -29,7 +31,7 @@ int main(int argc, char **argv)
     std::cout << "Margin of error: " << margin_of_error << std::endl;
 }
 
-std::array<int, 2> GetRecord(const char *input)
+std::array<base_t, 2> GetRecord(const char *input)
 {
     std::ifstream buf(input);
 
@@ -40,7 +42,7 @@ std::array<int, 2> GetRecord(const char *input)
         throw std::invalid_argument("no time indicator");
     }
 
-    std::array<int, 2> record;
+    std::array<long long, 2> record;
     std::string number;
     while (!buf.eof())
     {
@@ -53,7 +55,7 @@ std::array<int, 2> GetRecord(const char *input)
 
         if (str == "Distance:")
         {
-            record[0] = std::stoi(number);
+            record[0] = std::stoll(number);
             number.clear();
             continue;
         }
@@ -61,13 +63,13 @@ std::array<int, 2> GetRecord(const char *input)
         number += str;
     }
 
-    record[1] = std::stoi(number);
+    record[1] = std::stoll(number);
     buf.close();
 
     return record;
 }
 
-int GetMarginOfError(int time, int record)
+int GetMarginOfError(base_t time, base_t record)
 {
     auto margin_of_error = 0;
     for (int speed = 1; speed < time; speed++)
