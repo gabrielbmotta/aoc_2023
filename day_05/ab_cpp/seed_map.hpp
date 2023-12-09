@@ -6,14 +6,14 @@
 
 class SeedMap
 {
-    std::map<int, std::array<int, 2>> seed_map;
+    std::map<unsigned, std::array<unsigned, 2>> seed_map;
 
 public:
     SeedMap();
 
-    void AddRange(int, int, int);
+    void AddRange(unsigned, unsigned, unsigned);
 
-    int MapSource(int);
+    unsigned MapSource(unsigned);
 };
 
 #endif //SEED_MAP_HPP

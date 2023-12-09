@@ -11,11 +11,11 @@ SeedMapper::SeedMapper(const char *almanac_name) : almanac{almanac_name}
     }
 
     // Get the list of seeds from it
-    int seed;
+    unsigned seed;
     while (!almanac.fail())
     {
         almanac >> seed;
-        if (seed != 0)
+        if (!almanac.fail())
         {
             seeds.push_back(seed);
         }
@@ -46,7 +46,7 @@ void SeedMapper::GetLocations()
     }
 }
 
-int SeedMapper::GetLowestLocation()
+unsigned SeedMapper::GetLowestLocation()
 {
     return locations.begin()->first;
 }
@@ -98,7 +98,7 @@ void SeedMapper::ReadMaps()
     maps[map_name_parts[0]] = {map_name_parts[2], {}};
 
     // Add ranges to map
-    std::array<int, 3> range;
+    std::array<unsigned, 3> range;
     auto it = range.begin();
     while (!almanac.fail())
     {
@@ -120,10 +120,10 @@ void SeedMapper::ReadMaps()
     return;
 }
 
-int SeedMapper::LocateSeed(int seed)
+unsigned SeedMapper::LocateSeed(unsigned seed)
 {
     std::string source = "seed";
-    int location = seed;
+    unsigned location = seed;
     while (source != "location")
     {
         std::cout << " " << source << " " << location;

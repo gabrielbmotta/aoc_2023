@@ -13,14 +13,13 @@
 class SeedMapper
 {
     std::ifstream almanac;
-    std::vector<int> seeds;
-    // std::vector<int> locations;
-    std::map<int, int> locations;
+    std::vector<unsigned> seeds;
+    std::map<unsigned, unsigned> locations;
     std::map<std::string, std::tuple<std::string, SeedMap>> maps;
 
     void ReadMaps();
 
-    int LocateSeed(int);
+    unsigned LocateSeed(unsigned);
 
 public:
     SeedMapper(const char *);
@@ -29,7 +28,7 @@ public:
 
     void GetLocations();
 
-    int GetLowestLocation();
+    unsigned GetLowestLocation();
 };
 
 #endif // SEED_MAPPER_HPP

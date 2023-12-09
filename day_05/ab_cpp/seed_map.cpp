@@ -2,12 +2,12 @@
 
 SeedMap::SeedMap() {}
 
-void SeedMap::AddRange(int drs, int srs, int rl)
+void SeedMap::AddRange(unsigned drs, unsigned srs, unsigned rl)
 {
     seed_map[srs] = {drs, rl};
 }
 
-int SeedMap::MapSource(int source)
+unsigned SeedMap::MapSource(unsigned source)
 {
     auto it = seed_map.lower_bound(source);
     if (it == seed_map.end() || !(it->first == source || it == seed_map.begin()))
