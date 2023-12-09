@@ -5,9 +5,10 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
-std::vector<std::array<int, 2>> GetRecords(const char *);
+std::array<int, 2> GetRecord(const char *);
 
 int GetMarginOfError(int, int);
 
@@ -22,26 +23,13 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    auto records = GetRecords(argv[1]);
-
-    auto margin_of_error = 0;
-    for (auto it = records.begin(); it != records.end(); it++)
-    {
-        auto mie = GetMarginOfError(it->at(0), it->at(1));
-        if (margin_of_error == 0)
-        {
-            margin_of_error = mie;
-        }
-        else
-        {
-            margin_of_error *= mie;
-        }
-    }
+    auto record = GetRecord(argv[1]);
+    auto margin_of_error = GetMarginOfError(record[0], record[1]);
 
     std::cout << "Margin of error: " << margin_of_error << std::endl;
 }
 
-std::vector<std::array<int, 2>> GetRecords(const char *input)
+std::array<int, 2> GetRecord(const char *input)
 {
     std::ifstream buf(input);
 
@@ -52,31 +40,31 @@ std::vector<std::array<int, 2>> GetRecords(const char *input)
         throw std::invalid_argument("no time indicator");
     }
 
-    std::vector<std::array<int, 2>> records;
-    while (!buf.fail())
+    std::array<int, 2> record;
+    std::string number;
+    while (!buf.eof())
     {
-        auto val = 0;
-        buf >> val;
-
-        if (!buf.fail())
+        // auto val = 0;
+        buf >> str;
+        if (buf.eof())
         {
-            records.push_back({val, -1});
+            break;
         }
-    }
-    buf.clear();
 
-    buf >> str;
-    if (str != "Distance:")
-    {
-        throw std::invalid_argument("no distance indicator");
-    }
+        if (str == "Distance:")
+        {
+            record[0] = std::stoi(number);
+            number.clear();
+            continue;
+        }
 
-    for (auto it = records.begin(); it != records.end(); it++)
-    {
-        buf >> it->at(1);
+        number += str;
     }
 
-    return records;
+    record[1] = std::stoi(number);
+    buf.close();
+
+    return record;
 }
 
 int GetMarginOfError(int time, int record)

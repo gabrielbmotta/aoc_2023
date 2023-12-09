@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(BoatingSchool VERSION 1.0)
+project(BoatingSchool VERSION 2.0)
 
 configure_file(main.h.in main.h)
 
@@ -13,5 +13,5 @@ enable_testing()
 
 add_test(NAME Example COMMAND BoatingSchool ${PROJECT_SOURCE_DIR}/input_example)
 set_tests_properties(Example
-    PROPERTIES PASS_REGULAR_EXPRESSION "Margin of error: 288"
+    PROPERTIES PASS_REGULAR_EXPRESSION "Margin of error: 71503"
 )
