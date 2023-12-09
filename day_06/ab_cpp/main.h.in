@@ -1,0 +1,7 @@
+#ifndef MAIN_H
+#define MAIN_H
+
+#define BOATING_SCHOOL_VERSION_MAJOR @BoatingSchool_VERSION_MAJOR@
+#define BOATING_SCHOOL_VERSION_MINOR @BoatingSchool_VERSION_MINOR@
+
+#endif // MAIN_H
