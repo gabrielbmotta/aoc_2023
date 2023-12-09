@@ -159,6 +159,17 @@ numbers?**
 
 To begin, [get your puzzle input](https://adventofcode.com/2023/day/5/input).
 
+## Building
+
+This project uses [CMake](https://cmake.org/). For more information on how to
+use this build system, see the
+[documentation](https://cmake.org/cmake/help/latest/manual/cmake.1.html).
+
+## Testing
+
+This project includes unit tests that can be run by invoking
+[`ctest`](https://cmake.org/cmake/help/latest/manual/ctest.1.html).
+
 ## License
 
 This project is released under the same license of this repository.
