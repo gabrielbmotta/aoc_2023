@@ -1,0 +1,7 @@
+#ifndef MAIN_H
+#define MAIN_H
+
+#define CAMEL_CARD_WINNER_VERSION_MAJOR @CamelCardWinner_VERSION_MAJOR@
+#define CAMEL_CARD_WINNER_VERSION_MINOR @CamelCardWinner_VERSION_MINOR@
+
+#endif // MAIN_H
