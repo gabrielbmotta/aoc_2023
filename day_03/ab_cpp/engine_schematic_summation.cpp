@@ -146,7 +146,11 @@ int EngineSchematic::FindGearRatios()
     while (pos != std::string::npos)
     {
         auto numbers = GetGearRatio(pos, PREV);
-        auto next_numbers = GetGearRatio(pos, NEXT);
+
+        auto next_numbers = GetGearRatio(pos, CURR);
+        numbers.insert(numbers.end(), next_numbers.begin(), next_numbers.end());
+
+        next_numbers = GetGearRatio(pos, NEXT);
         numbers.insert(numbers.end(), next_numbers.begin(), next_numbers.end());
 
         if (numbers.size() == 2)
