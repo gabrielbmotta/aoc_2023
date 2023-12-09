@@ -26,34 +26,64 @@ function itereate_differences(array)
     last = []
     if is_all_zero(array)
         #println("go up again")
-        last = append!(last,array[end])
     else 
         #println("go deeper")
         last = itereate_differences(differences)
-        last = append!(last,array[end])
     end
-    return last
+    return push!(last,array)
+end
+
+function get_last_value(diffs)
+    lasts = []
+    for diff in diffs
+        lasts = append!(lasts,diff[end])
+    end
+    return lasts
+end
+
+function get_first_value(diffs)
+    firsts = []
+    for diff in diffs
+        firsts = append!(firsts,diff[1])
+    end
+    return firsts
 end
 
 function predict_next_value(diffs)
-    n_elements = length(diffs)
-    nexts = diffs
+    lasts = get_last_value(diffs)
+    n_elements = length(lasts)
+    nexts = lasts
     for i in 2:(n_elements)
-        nexts[i] = nexts[i] + diffs[i-1]
+        nexts[i] = nexts[i] + lasts[i-1]
     end
     return nexts[end]
 end
 
-function compute_sum(lines)
+function predict_previous_value(diffs)
+    firsts = get_first_value(diffs)
+    n_elements = length(firsts)
+    nexts = firsts
+    for i in 2:(n_elements)
+        nexts[i] = firsts[i] - nexts[i-1]
+    end
+    return nexts[end]
+end
+
+function compute_sum(lines, task)
     sum = 0
     for line in lines
         array = convert_line_to_array(line)
-        last_differences = itereate_differences(array)
-        next = predict_next_value(last_differences)
+        differences = itereate_differences(array)
+        if task === 1
+            next = predict_next_value(differences)
+        elseif task == 2
+            next = predict_previous_value(differences)
+        end
         sum = sum + next
     end
     return sum
 end
-
-sum = compute_sum(lines)
-println("Task 1: ", sum)
+sum1 = compute_sum(lines, 1)
+sum2 = compute_sum(lines, 2)
+println("Task 1: ", sum1)
+println("Task 2: ", sum2)
