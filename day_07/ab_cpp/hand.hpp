@@ -3,7 +3,6 @@
 
 #include <array>
 #include <string>
-#include <vector>
 
 class Hand
 {
@@ -28,8 +27,7 @@ class Hand
     int bid;
 
     Type type;
-
-    void UpdateType(std::array<int, 5>::iterator, std::vector<int> &);
+    int jokers;
 
 public:
     Hand(const std::string &, int);

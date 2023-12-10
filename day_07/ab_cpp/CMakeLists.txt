@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(CamelCardsWinner VERSION 1.0)
+project(CamelCardsWinner VERSION 2.0)
 
 configure_file(main.h.in main.h)
 

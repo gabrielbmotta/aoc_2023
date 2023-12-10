@@ -20,7 +20,8 @@ const std::array<std::string, Hand::FIVE_OF_A_KIND + 1> Hand::types = {
 #endif // _DEBUG
 
 const std::array<char, 13> Hand::suits = {
-    '2', // lowest
+    'J', // lowest
+    '2',
     '3',
     '4',
     '5',
@@ -29,7 +30,6 @@ const std::array<char, 13> Hand::suits = {
     '8',
     '9',
     'T',
-    'J',
     'Q',
     'K',
     'A' // highest
@@ -37,9 +37,12 @@ const std::array<char, 13> Hand::suits = {
 
 Hand::Hand(const std::string &new_hand, int new_bid)
     : bid{new_bid},
-      type{HIGH_CARD}
+      type{HIGH_CARD},
+      jokers{0}
 {
     // Convert characters to suits
+    std::array<int, 13> count = {0};
+    auto max_card = -1;
     for (auto i = 0; i < new_hand.size(); i++)
     {
         auto it = std::find(suits.begin(), suits.end(), new_hand[i]);
@@ -49,14 +52,57 @@ Hand::Hand(const std::string &new_hand, int new_bid)
         }
 
         hand[i] = std::distance(suits.begin(), it);
+        count[hand[i]]++;
+        if (hand[i] != 0 && (max_card == -1 || count[hand[i]] > count[max_card]))
+        {
+            max_card = hand[i];
+        }
     }
 
-    std::vector<int> counted_cards;
-
-    for (auto card = hand.begin(); card != hand.end(); card++)
+    // Get maximum number of any one card (along with jokers)
+    auto max_count = count[0] + (max_card > 0 ? count[max_card] : 0);
+    switch (max_count)
     {
-        UpdateType(card, counted_cards);
+    case 5:
+        type = FIVE_OF_A_KIND;
+        return;
+
+    case 4:
+        type = FOUR_OF_A_KIND;
+        return;
+
+    case 3:
+        type = THREE_OF_A_KIND;
+        break;
+
+    case 2:
+        type = ONE_PAIR;
+        break;
     }
+
+    // Clear it and jokers to avoid repeats
+    if (max_count > 1)
+    {
+        count[max_card] = 0;
+    }
+    count[0] = 0;
+
+    // Find any additional pairs
+    if (std::find(count.begin(), count.end(), 2) != count.end())
+    {
+        switch (type)
+        {
+        case THREE_OF_A_KIND:
+            type = FULL_HOUSE;
+            break;
+
+        case ONE_PAIR:
+            type = TWO_PAIR;
+            break;
+        }
+    }
+
+    return;
 }
 
 Hand::Hand(const std::string &new_hand, const std::string &new_bid)
@@ -104,42 +150,4 @@ bool operator<(const Hand &l, const Hand &r)
 bool operator>(const Hand &l, const Hand &r)
 {
     return !(l < r);
-}
-
-void Hand::UpdateType(std::array<int, 5>::iterator card, std::vector<int> &counted_cards)
-{
-    if (std::find(counted_cards.begin(), counted_cards.end(), *card) != counted_cards.end() || type == FIVE_OF_A_KIND || type == FOUR_OF_A_KIND || type == FULL_HOUSE || type == TWO_PAIR)
-    {
-        return;
-    }
-
-    // Count number of times this card appears in the hand
-    auto count = std::count(hand.begin(), hand.end(), *card);
-
-    // Handle each case
-    switch (count)
-    {
-    case 5:
-        type = FIVE_OF_A_KIND;
-        break;
-
-    case 4:
-        type = FOUR_OF_A_KIND;
-        break;
-
-    case 3:
-        // Could be a full house if a pair was already found
-        type = type == ONE_PAIR ? FULL_HOUSE : THREE_OF_A_KIND;
-        break;
-
-    case 2:
-        // Could be a full house if a three of a kind was already found
-        type = type == THREE_OF_A_KIND ? FULL_HOUSE : type == ONE_PAIR ? TWO_PAIR
-                                                                       : ONE_PAIR;
-
-        break;
-    }
-
-    counted_cards.push_back(*card);
-    return;
 }
