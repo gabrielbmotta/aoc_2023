@@ -55,7 +55,7 @@ Hand::Hand(const std::string &new_hand, const std::string &new_bid)
 
 int Hand::GetBid()
 {
-    return bid;
+        return bid;
 }
 
 bool operator<(const Hand &l, const Hand &r)
@@ -77,9 +77,10 @@ bool operator<(const Hand &l, const Hand &r)
         return false;
     }
 
+    // Only some types support secondary suits
     if (l.type_suit_secondary != r.type_suit_secondary && (l.type == Hand::FULL_HOUSE || l.type == Hand::TWO_PAIR))
     {
-        return l.type_suit_secondary < l.type_suit_secondary;
+        return l.type_suit_secondary < r.type_suit_secondary;
     }
 
     // If both are a full house and have the same suits, then they're the same
