@@ -3,6 +3,21 @@
 #include <algorithm>
 #include <stdexcept>
 
+#ifdef _DEBUG
+#include <fstream>
+#endif // _DEBUG
+
+#ifdef _DEBUG
+const std::array<std::string, Hand::FIVE_OF_A_KIND + 1> Hand::types = {
+    "high card",
+    "one pair",
+    "two pair",
+    "three of a kind",
+    "full house",
+    "four of a kind",
+    "five of a kind"};
+#endif // _DEBUG
+
 const std::array<char, 13> Hand::suits = {
     '2', // lowest
     '3',
@@ -55,7 +70,20 @@ Hand::Hand(const std::string &new_hand, const std::string &new_bid)
 
 int Hand::GetBid()
 {
-        return bid;
+#ifdef _DEBUG
+    std::ofstream debug("debug", std::ios::app);
+
+    for (auto card = hand.begin(); card != hand.end(); card++)
+    {
+        debug << suits[*card];
+    }
+
+    debug << " "
+          << suits[type_suit] << " "
+          << suits[type_suit_secondary] << " "
+          << types[type] << std::endl;
+#endif // _DEBUG
+    return bid;
 }
 
 bool operator<(const Hand &l, const Hand &r)

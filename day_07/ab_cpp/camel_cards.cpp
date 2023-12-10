@@ -6,6 +6,10 @@
 #include <string>
 #include <vector>
 
+#ifdef _DEBUG
+#include <cstdio>
+#endif // _DEBUG
+
 int camel_cards::WinCamelCards(const char *input)
 {
     std::ifstream buf(input);
@@ -18,6 +22,10 @@ int camel_cards::WinCamelCards(const char *input)
     }
 
     std::sort(hands.begin(), hands.end());
+
+#ifdef _DEBUG
+    std::remove("debug");
+#endif // _DEBUG
 
     auto score = 0;
     for (auto i = 0; i < hands.size(); i++)

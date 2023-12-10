@@ -17,6 +17,10 @@ class Hand
         FIVE_OF_A_KIND
     };
 
+#ifdef _DEBUG
+    static const std::array<std::string, FIVE_OF_A_KIND + 1> types;
+#endif // _DEBUG
+
     static const std::array<char, 13> suits;
 
     std::array<int, 5> hand;
